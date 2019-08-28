@@ -4,12 +4,29 @@ language: python
 python: 3.7
 # pre-commit hooks can use Docker, so we should go ahead and enable it
 services: docker
+env:
+  global:
+    - CURL_CACHE_DIR="$HOME/.cache/curl"
+    - TERRAFORM_VERSION="0.12.3"
+    - TERRAFORM_ZIP="terraform_${TERRAFORM_VERSION}_linux_amd64.zip"
 
-# Cache pip packages and pre-commit plugins to speed up builds
+# Cache pip packages, pre-commit plugins, and some curl downloads to
+# speed up builds
 cache:
   pip: true
   directories:
     - $HOME/.cache/pre-commit
+    - $CURL_CACHE_DIR
+
+before_install:
+  # Make a cache directory for curl downloads
+  - mkdir -p $CURL_CACHE_DIR
+  # Install terraform
+  - curl --output "${CURL_CACHE_DIR}/${TERRAFORM_ZIP}"
+      --time-cond "${CURL_CACHE_DIR}/${TERRAFORM_ZIP}" --location
+      "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/${TERRAFORM_ZIP}"
+  - sudo unzip -d /opt/terraform "${CURL_CACHE_DIR}/${TERRAFORM_ZIP}"
+  - sudo ln -s /opt/terraform/terraform /usr/bin/terraform
 
 install:
   - pip install --upgrade -r requirements-test.txt
