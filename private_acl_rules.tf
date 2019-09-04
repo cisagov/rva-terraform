@@ -100,11 +100,35 @@ resource "aws_network_acl_rule" "private_egress_to_operations_via_vnc" {
 # For: RVA target http callbacks to Kali server
 resource "aws_network_acl_rule" "private_ingress_from_anywhere_via_http" {
   network_acl_id = aws_network_acl.rva_private.id
-  egress         = true # This is temporary to allow Kali update TODO REMOVE
+  egress         = false # This is temporary to allow Kali update TODO REMOVE
   protocol       = "tcp"
   rule_number    = "133"
   rule_action    = "allow"
   cidr_block     = "0.0.0.0/0"
   from_port      = 80
   to_port        = 80
+}
+
+# TODO REMOVE THIS
+resource "aws_network_acl_rule" "private_egress_from_anywhere_via_http" {
+  network_acl_id = aws_network_acl.rva_private.id
+  egress         = true # This is temporary to allow Kali update TODO REMOVE
+  protocol       = "tcp"
+  rule_number    = "134"
+  rule_action    = "allow"
+  cidr_block     = "0.0.0.0/0"
+  from_port      = 80
+  to_port        = 80
+}
+
+# Allow ingress from operations subnet via ephemeral ports
+resource "aws_network_acl_rule" "private_ingress_from_anywhere_via_ephemeral_ports" {
+  network_acl_id = aws_network_acl.rva_private.id
+  egress         = false
+  protocol       = "tcp"
+  rule_number    = "135"
+  rule_action    = "allow"
+  cidr_block     = "0.0.0.0/0"
+  from_port      = 1024
+  to_port        = 65535
 }
