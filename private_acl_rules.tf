@@ -94,3 +94,17 @@ resource "aws_network_acl_rule" "private_egress_to_operations_via_vnc" {
   from_port      = 5901
   to_port        = 5901
 }
+
+# TODO REMOVE THIS
+# Allow ingress from anywhere via port 80
+# For: RVA target http callbacks to Kali server
+resource "aws_network_acl_rule" "private_ingress_from_anywhere_via_http" {
+  network_acl_id = aws_network_acl.rva_private.id
+  egress         = true # This is temporary to allow Kali update TODO REMOVE
+  protocol       = "tcp"
+  rule_number    = "133"
+  rule_action    = "allow"
+  cidr_block     = "0.0.0.0/0"
+  from_port      = 80
+  to_port        = 80
+}

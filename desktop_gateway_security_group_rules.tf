@@ -45,3 +45,36 @@ resource "aws_security_group_rule" "desktop_gw_egress_to_kali_via_vnc" {
   from_port         = 5901
   to_port           = 5901
 }
+
+# TODO REMOVE
+# Allow egress via port 80 of kali instance for update
+# For: Allow egress via port 80 of kali instance for update
+resource "aws_security_group_rule" "port_80_egress_for_kali_update" {
+  security_group_id = aws_security_group.rva_desktop_gateway.id
+  type              = "egress"
+  protocol          = "tcp"
+  cidr_blocks       = ["${aws_instance.kali.private_ip}/32"]
+  from_port         = 80
+  to_port           = 80
+}
+
+# TODO REMOPV
+# Allow ingress via port 80 of kali instance for update
+resource "aws_security_group_rule" "port_80_ingress_for_kali_update" {
+  security_group_id = aws_security_group.rva_desktop_gateway.id
+  type              = "ingress"
+  protocol          = "tcp"
+  cidr_blocks       = ["${aws_instance.kali.private_ip}/32"]
+  from_port         = 80
+  to_port           = 80
+}
+# TODO REMOVE
+# Temp rule for Kali update
+resource "aws_security_group_rule" "desktop_ops_egress_to_anywhere_via_ephemeral_ports" {
+  security_group_id = aws_security_group.rva_desktop_gateway.id
+  type              = "egress"
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  from_port         = 1024
+  to_port           = 65535
+}

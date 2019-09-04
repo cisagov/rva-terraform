@@ -25,7 +25,7 @@ resource "aws_network_acl_rule" "operations_ingress_from_private_via_vnc" {
 }
 
 # Allow ingress from anywhere via port 80
-# For: RVA target http callbacks to GoPhish server
+# For: RVA target http callbacks to Kali server
 resource "aws_network_acl_rule" "operations_ingress_from_anywhere_via_http" {
   network_acl_id = aws_network_acl.rva_operations.id
   egress         = false
@@ -38,7 +38,7 @@ resource "aws_network_acl_rule" "operations_ingress_from_anywhere_via_http" {
 }
 
 # Allow ingress from anywhere via port 443
-# For: RVA target https callbacks to GoPhish server
+# For: RVA target https callbacks to Kali server
 resource "aws_network_acl_rule" "operations_ingress_from_anywhere_via_https" {
   network_acl_id = aws_network_acl.rva_operations.id
   egress         = false
@@ -101,4 +101,16 @@ resource "aws_network_acl_rule" "operations_egress_to_anywhere_via_https" {
   cidr_block     = "0.0.0.0/0"
   from_port      = 443
   to_port        = 443
+}
+
+# TODO REMOVE TEMP RULE FOR KALI UPDATE
+resource "aws_network_acl_rule" "operations_egress_from_anywhere_via_http" {
+  network_acl_id = aws_network_acl.rva_operations.id
+  egress         = true
+  protocol       = "tcp"
+  rule_number    = "300"
+  rule_action    = "allow"
+  cidr_block     = "0.0.0.0/0"
+  from_port      = 80
+  to_port        = 80
 }

@@ -86,3 +86,15 @@ resource "aws_security_group_rule" "kali_ops_egress_to_anywhere_via_https" {
   from_port         = 443
   to_port           = 443
 }
+
+# TODO REMOVE
+# Allow egress from anywhere via HTTP
+# For: updating kali image test
+resource "aws_security_group_rule" "kali_ops_egress_from_anywhere_via_http" {
+  security_group_id = aws_security_group.rva_kali_ops.id
+  type              = "egress"
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  from_port         = 80
+  to_port           = 80
+}
